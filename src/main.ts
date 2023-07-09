@@ -11,8 +11,12 @@ const initApp = {
   amount: '',
   sumatoria: 0,
   queda: 0,
-  gastos: [] as { name: string; amount: string }[],
+  gastos: [] as Gasto[],
 };
+
+class Gasto {
+  constructor(public name = '', public amount = '', public countIt = true) {}
+}
 
 @Component({
   selector: 'my-app',
@@ -73,19 +77,24 @@ const initApp = {
       <br>
       
       <div>
-        <table class="minimalistBlack">
+        <table class="paleBlueRows">
           <thead>
             <tr>
-              <th  style="width:60px; text-align: center">Borrar</th>
-              <th>Gasto</th>
-              <th>Importe</th>
+            <th style="width:60px; text-align: center">Activo</th>
+            <th>Gasto</th>
+            <th>Importe</th>
+            <th style="width:60px; text-align: center">Borrar</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let gasto of app.gastos; let idx = index">
-              <td  style="text-align: center"><button (click)="deleteWaste(idx)"> X </button></td>
-              <td>{{gasto.name}}</td>
-              <td>{{gasto.amount}}</td>
+            <td  style="text-align: center">
+              <input type="checkbox" 
+              [(ngModel)]="gasto.countIt"
+              (ngModelChange)="calculate()"></td>
+            <td>{{gasto.name}}</td>
+            <td>{{gasto.amount}}</td>
+            <td  style="text-align: center"><button (click)="deleteWaste(idx)"> X </button></td>
             </tr>
           </tbody>
         </table>
@@ -100,7 +109,7 @@ export class App {
 
   storage = new StorageUtils<{
     presupuesto: string;
-    gastos: { name: string; amount: string }[];
+    gastos: Gasto[];
   }>();
 
   constructor() {
@@ -108,7 +117,7 @@ export class App {
     if (init) {
       this.app = init;
     } else {
-      this.save()
+      this.save();
     }
   }
 
@@ -123,7 +132,7 @@ export class App {
 
   addWaste() {
     if (this.app.amount && this.app.name) {
-      this.app.gastos.push({ name: this.app.name, amount: this.app.amount });
+      this.app.gastos.push(new Gasto(this.app.name, this.app.amount));
       this.calculate();
     }
   }
@@ -137,12 +146,12 @@ export class App {
     this.app.amount = '';
     this.app.name = '';
     this.app.sumatoria = this.app.gastos.reduce(
-      (acc: any, el: any) => acc + +el.amount,
+      (acc: any, el: any) => (el.countIt ? acc + +el.amount : acc),
       0
     );
     this.app.queda = +this.app.presupuesto - this.app.sumatoria;
 
-    this.save()
+    this.save();
   }
 
   save() {
