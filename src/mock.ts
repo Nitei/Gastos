@@ -18,7 +18,7 @@ export const mock = {
       countIt: true,
     } as Gasto,
     {
-      name: 'carabina',
+      name: 'cara',
       amount: '150',
       countIt: true,
     } as Gasto,
