@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { StorageUtils } from './storage-manager';
+import { mock } from './mock';
 
 const initApp = {
   presupuesto: '',
@@ -14,7 +15,7 @@ const initApp = {
   gastos: [] as Gasto[],
 };
 
-class Gasto {
+export class Gasto {
   constructor(public name = '', public amount = '', public countIt = true) {}
 }
 
@@ -25,6 +26,11 @@ class Gasto {
   template: `
   <article>
   
+  <br>
+
+  <button (click)="loadMock()"> Cargar mock </button> 
+
+  <br>
   <br>
 
     <label>
@@ -60,7 +66,7 @@ class Gasto {
       <label>
       Nombre 
       &nbsp;
-      <input [(ngModel)]="app.name" (input)="save()">
+      <input id="name" [(ngModel)]="app.name" (input)="save()">
       &nbsp;
       Importe 
       &nbsp;
@@ -135,6 +141,11 @@ export class App {
       this.app.gastos.push(new Gasto(this.app.name, this.app.amount));
       this.calculate();
     }
+    const timer = setTimeout(() => {
+      document.getElementById('name')?.focus();
+      clearTimeout(timer);
+    });
+    console.log(this.app);
   }
 
   deleteWaste(idx: number) {
@@ -156,6 +167,11 @@ export class App {
 
   save() {
     this.storage.session.setKey('gastos', this.app);
+  }
+
+  loadMock() {
+    this.app = mock;
+    this.calculate();
   }
 }
 
