@@ -39,11 +39,11 @@ export class Gasto {
         <input [(ngModel)]="app.presupuesto" (input)="save()" (ngModelChange)="calculate()">
       &nbsp;
       
-      <span style="margin-right: 40px;">
+      <span style="margin-right: 40px; background-color: #88ff00c2">
         Queda: {{app.queda}} 
       </span>
 
-      <span>
+      <span style="background-color: #fb00006b">
         Gastos: {{app.sumatoria}}
       </span>
       
